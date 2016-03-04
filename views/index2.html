@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+
+
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.16/d3.js" charset="utf-8"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.1/jquery.js"></script>
+
+	<title></title>
+</head>
+<body>
+	<script type="text/javascript">
+
+	$( document ).ready(function() {
+	  	var diameter = 960,
+    	format = d3.format(",d"),
+    	color = d3.scale.category20c();
+
+    	var svg = d3.select('.chart').append('svg')
+                    .attr('width', diameter)
+                    .attr('height', diameter);
+
+    	var bubble = d3.layout.pack()
+                .size([diameter, diameter])
+                .value(function(d) {return d.size;})
+         .sort(function(a, b) {
+                 return -(a.value - b.value)
+                }) 
+                .padding(10);
+  
+		$.ajax({
+			url: "http://localhost:3000/results", 
+			success: function(data){
+
+				var node = svg.selectAll(".node")
+					.data(bubble.nodes(data)
+					.filter(function(d) { return !d.children; }))
+					.enter().append("g")
+					.attr("class", "node")
+					.attr("transform", function(d) { return "translate(" + d.x + "," + d.y + ")"; });
+
+				node.append("title")
+					.text(function(d) { return d.className + ": " + format(d.value); });
+
+				node.append("circle")
+					.attr("r", function(d) { return d.r; })
+					.style("fill", function(d) { return color(d.name); });
+
+				node.append("text")
+					.attr("dy", ".3em")
+					.style("text-anchor", "middle")
+					.text(function(d) { return d.className.substring(0, d.r / 3); });
+			
+				// var nodes = bubble.nodes(data)
+    //                     .filter(function(d) { return !d.children; }); // filter out the outer bubble
+    //             nodes.append("text")
+    //   					.attr("dy", ".3em")
+				// 		.style("text-anchor", "middle")
+				// 		.text(function(d) { return d.className.substring(0, d.r / 3); });
+  		// 		var vis = svg.selectAll('circle')
+    //                 .data(nodes);
+
+
+  
+			 //  	vis.enter().append('circle')
+			 //            .attr('transform', function(d) { return 'translate(' + d.x + ',' + d.y + ')'; })
+			 //            .attr('r', function(d) { return d.r; })
+			 //            .attr('class', function(d) { return d.className; });
+			}
+		});
+	});
+
+	</script>
+	<div class="chart">
+	</div>
+</body>
+</html>
+
+

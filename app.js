@@ -2,15 +2,14 @@ var fs = require('fs')
 var regexComments = /\/\/.+/g;
 var regexRest = /\W+|\d|var|function|www|app|angular|module|main|define/g
 
-var cleanOb = {};
+var cleanOb;
 var word;
-var dataClear = [];
+var dataClear;
 
 
 var test = fs.readFileSync('./tags.js', 'utf8');
 
 exports.startAll = function () {
-	console.log(test);
 	return parseFile(test);
 };
 
@@ -27,6 +26,7 @@ function stringToArray (list) {
 };
 
 function countWords (words) {
+	cleanOb = {};
 	for (var i = 0; i < words.length; i++) {
 		word = words[i];
 
@@ -40,9 +40,12 @@ function countWords (words) {
 };
 
 function createData (data) {
+	dataClear = [];
 	for (var key in data) {
 		if (data.hasOwnProperty(key)) {
-     		dataClear.push({"word": key, "occured": data[key]})
+     		dataClear.push({"name": key, 
+     						"size": data[key], 
+     						"className": key.toLowerCase()});
 		}
 	}
 	return dataClear;	
