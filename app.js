@@ -1,21 +1,33 @@
-var fs = require('fs')
+var fs = require('fs');
+var glob = require("glob");
 var regexComments = /\/\/.+/g;
-var regexRest = /\W+|\d|var|function|www|app|angular|module|main|define/g
+var regexRest = /\W+|\d|var|function|www|app|angular|module|main|define|get/g;
 
-var cleanOb;
-var word;
-var dataClear;
+var cleanOb, word, file;
+
+var dataClear =[];
+
+var directory = "../../vivo-client/public/app/";
+var options = {cwd: directory};
+
+var files = glob.sync("**/**/*.js", options);
 
 
-var test = fs.readFileSync('./tags.js', 'utf8');
+exports.startAll = function (){
+	return eachFile(files);
+};
 
-exports.startAll = function () {
-	return parseFile(test);
+function eachFile (list) {
+	for (var i = 0; i < list.length; i++) {
+		var path = directory + list[i];
+		file = fs.readFileSync(path, 'utf8');
+		return parseFile(file);
+	};
 };
 
 function parseFile (data) {
 	var noComments = cleanString(data, regexComments, '');
-	var noRepetitions = cleanString(noComments, regexRest, ",");
+	var noRepetitions = cleanString(noComments, regexRest, ',');
 	return stringToArray(noRepetitions);	
 };
 
@@ -40,7 +52,6 @@ function countWords (words) {
 };
 
 function createData (data) {
-	dataClear = [];
 	for (var key in data) {
 		if (data.hasOwnProperty(key)) {
      		dataClear.push({"name": key, 
@@ -48,9 +59,18 @@ function createData (data) {
      						"className": key.toLowerCase()});
 		}
 	}
-	return dataClear;	
+	return createD3Obj(dataClear);	
 };
 
+
+function createD3Obj (data) {
+	var sorted = data.sort(function(a,b) {
+		return b.occured - a.occured
+	});
+	
+	sorted = sorted.slice(0,99);
+	return {children: sorted};
+}
 
 function cleanString (string, regex, subst) {
 	return string.replace(regex, subst);
