@@ -44,9 +44,11 @@ function createData (data) {
 	dataClear = [];
 	for (var key in data) {
 		if (data.hasOwnProperty(key)) {
-     		dataClear.push({"name": key,
+     		dataClear.push({"keyword": key,
      						"size": data[key],
-     						"className": key.toLowerCase()});
+     						"className": key.toLowerCase(),
+     						"week": "add week value when saving to mongo"
+     					});
 		}
 	}
 	return dataClear;
