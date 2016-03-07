@@ -3,9 +3,11 @@ var app = express();
 var path = require('path');
 var data = require('./app');
 
- var options = {
+var options = {
     root: __dirname + '/views/',
-  };
+};
+
+app.use(express.static('public'));
 
 app.use(express.static('public'));
 

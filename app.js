@@ -1,7 +1,9 @@
 var fs = require('fs');
 var glob = require("glob");
 var regexComments = /\/\/.+/g;
-var regexRest = /\W+|\d|var|function|www|app|angular|module|main|define|get/g;
+
+var regexRest = /\W+|\d|var|function|scope|www|app|angular|module|main|define/g
+
 
 var cleanOb, word, file;
 
@@ -26,9 +28,9 @@ function eachFile (list) {
 };
 
 function parseFile (data) {
-	var noComments = cleanString(data, regexComments, '');
-	var noRepetitions = cleanString(noComments, regexRest, ',');
-	return stringToArray(noRepetitions);	
+	var noComments = cleanString(data, regexComments, "");
+	var noRepetitions = cleanString(noComments, regexRest, ",");
+	return stringToArray(noRepetitions);
 };
 
 function stringToArray (list) {
@@ -41,12 +43,13 @@ function countWords (words) {
 	cleanOb = {};
 	for (var i = 0; i < words.length; i++) {
 		word = words[i];
+		// word = cleanString(words[i], /[s]$/, "")
 
 		if (!cleanOb.hasOwnProperty(word)) {
-			cleanOb[word] = 1; 
+			cleanOb[word] = 1;
 		} else {
 			cleanOb[word] += 1;
-		}		
+		}
 	}
 	return createData(cleanOb);
 };
@@ -54,9 +57,11 @@ function countWords (words) {
 function createData (data) {
 	for (var key in data) {
 		if (data.hasOwnProperty(key)) {
-     		dataClear.push({"name": key, 
-     						"size": data[key], 
-     						"className": key.toLowerCase()});
+     		dataClear.push({"keyword": key,
+     						"size": data[key],
+     						"className": key.toLowerCase(),
+     						"week": "add week value when saving to mongo"
+     					});
 		}
 	}
 	return createD3Obj(dataClear);	
@@ -68,7 +73,7 @@ function createD3Obj (data) {
 		return b.occured - a.occured
 	});
 	
-	sorted = sorted.slice(0,99);
+	sorted = sorted.slice(0,10);
 	return {children: sorted};
 }
 
