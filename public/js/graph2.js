@@ -19,8 +19,10 @@ $( document ).ready(function() {
         r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius,
         d = {cluster: i, radius: r};
     if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
+    
     return d;
   });
+
 
   // Use the pack layout to initialize node positions.
   d3.layout.pack()
@@ -46,16 +48,13 @@ $( document ).ready(function() {
 
   var node = svg.selectAll("circle")
       .data(nodes)
-      .enter().append("g")
-      .attr("class", "node")
-      .append("circle")
+      .enter().append("circle")
       .style("fill", function(d) { return color(d.cluster); })
       .call(force.drag);
 
     node.append("text")
         .attr("dy", ".3em")
         .style("text-anchor", "middle")
-        .text(function(d) {return "rocco"})
 
   node.transition()
       .duration(750)
