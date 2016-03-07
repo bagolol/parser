@@ -70,23 +70,25 @@
 	                                .attr("id", "svg_vis");
 	        that = this;
 
-		    this.circles = this.vis.selectAll("circle")
+		    this.circles = this.vis.selectAll(".node")
 		                                    .data(this.nodes, function(d) {return d.name;})
-		                                    .enter().append("circle")
-		                                    .attr("r", 0)
+		                                    .enter().append("g")
+		                                    .attr("class", "circle")
+		                                    .append("circle")
+						                    .attr("r", 0)
 						                    .attr("fill", function(d){
 						                    	return that.color(d.name); 
-						                    });
-		    return this.circles.transition().duration(2000).attr("r", function(d) {
+						                    })
+		    this.circles.append("text")
+		    			.text(function(d) { return d.name.substring(0, d.radius / 3); })
+	                    .attr("r", 0)
+	                    .attr("fill", function(d){
+	                    	return that.color("test"); 
+	                    });
+				
+		    return this.circles.transition().duration(3000).attr("r", function(d) {
 		        return d.radius;
 		    });
-
-		    // this.circles.append("text")
-						// .attr("dy", ".3em")
-						// .style("text-anchor", "middle")
-						// .text(function(d) { 
-						// 	return d.name.substring(0, d.r / 3); 
-						// });	
 		};
 
 		Chart.prototype.charge = function(d) {
@@ -115,7 +117,6 @@
 		Chart.prototype.moveTowardsCenter = function(alpha) {
 		    return (function(_this) {
 		        return function(d) {
-		        	console.log(_this.center);
 		            d.x = d.x + (_this.center.x - d.x) * (_this.damper + 0.02) * alpha;
 		            return d.y = d.y + (_this.center.y - d.y) * (_this.damper + 0.02) * alpha;
 		        };
@@ -123,7 +124,7 @@
 		};
 
 		Chart.prototype.displayByWeek = function() {
-		    this.force.gravity(this.layout_gravity).charge(this.charge).friction(0.9).on("tick", (function(_this) {
+		    this.force.gravity(this.layoutGravity).charge(this.charge).friction(0.9).on("tick", (function(_this) {
 		        return function(e) {
 		            return _this.circles.each(_this.moveTowardsWeek(e.alpha)).attr("cx", function(d) {
 		                return d.x;
@@ -141,8 +142,8 @@
 		        return function(d) {
 		            var target;
 		            target = _this.weekCenters[d.week];
-		            d.x = d.x + (target.x - d.x) * (_this.damper + 0.02) * alpha * 1.1;
-		            return d.y = d.y + (target.y - d.y) * (_this.damper + 0.02) * alpha * 1.1;
+		            d.x = d.x + (target.x - d.x) * (_this.damper + 0.1) * alpha * 1.1;
+		            return d.y = d.y + (target.y - d.y) * (_this.damper + 0.1) * alpha * 1.1;
 		        };
 		    })(this);
 		};
