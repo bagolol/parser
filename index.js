@@ -1,7 +1,8 @@
 var express = require('express');
 var app = express();
 var path = require('path');
-var data = require('./app');
+var Blob = require('./dbModel');
+
 
 var options = {
     root: __dirname + '/views/',
@@ -9,20 +10,18 @@ var options = {
 
 app.use(express.static('public'));
 
-app.use(express.static('public'));
-
-
 app.get('/', function(req, res) {
-  res.sendFile('index2.html', options);
+	res.sendFile('index2.html', options);
 });
 
 
 app.get('/results', function(req, res) {
-	var D3Obj = data.startAll();
-	res.send(D3Obj);
+	Blob.findOne({'week': 6}, function (err, docs){
+		res.send(docs.keywords);
+	});	
 });
 
 
 app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+	console.log('Example app listening on port 3000!');
 });

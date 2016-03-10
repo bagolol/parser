@@ -1,4 +1,9 @@
 $( document ).ready(function() {
+
+    function displayData() {
+        d3.xhr("http://localhost:3000/results", renderBubbles);
+    };
+
     var width = 960,
         height = 900,
         padding = 2, // separation between same-color nodes
@@ -8,7 +13,7 @@ $( document ).ready(function() {
     var n = 100, // total number of nodes
         m = 5; // number of distinct clusters
 
-    var color = d3.scale.category20()
+    var color = d3.scale.category10()
         .domain(d3.range(m));
 
     // The largest node for each cluster.
@@ -23,6 +28,8 @@ $( document ).ready(function() {
 
         return d;
     });
+
+    console.log(nodes);
 
     // Use the pack layout to initialize node positions.
     d3.layout.pack()
