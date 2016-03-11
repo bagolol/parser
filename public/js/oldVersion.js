@@ -137,9 +137,13 @@
             };
         };
     };
-$( document ).ready(function() {
+// $( document ).ready(function() {
 
     function loadData (){
-        d3.xhr("http://localhost:3000/results", renderBubbles);
+        d3.xhr("http://localhost:3000/results", function (data) {
+            console.log(data;)
+        }
+        });
+            // renderBubbles);
     }
-});
+// });
